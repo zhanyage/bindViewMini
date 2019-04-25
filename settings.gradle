@@ -1,0 +1,1 @@
+include ':app', ':bindview-compile', ':bindview-annotation', ':bindview-core'
