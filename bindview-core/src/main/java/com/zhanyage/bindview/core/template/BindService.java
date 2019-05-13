@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class BindService {
 
-    private static final String TAG = "ButterKnife";
+    private static final String TAG = "BindViewService";
 
     private static final Map<String, BindTemplate> classCache = new LinkedHashMap<>();
 
