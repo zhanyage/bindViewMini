@@ -1,7 +1,9 @@
 apply plugin: 'java-library'
+apply plugin: 'com.novoda.bintray-release'  //添加
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api "androidx.annotation:annotation:1.0.0"
 }
 
 sourceCompatibility = "7"

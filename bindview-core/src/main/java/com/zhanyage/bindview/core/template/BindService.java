@@ -1,9 +1,10 @@
 package com.zhanyage.bindview.core.template;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
+
 import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,8 +27,9 @@ public class BindService {
      * bind for Activity
      * @param target activity
      */
-    @NonNull
+
     @UiThread
+    @NonNull
     public static final void bind(Activity target) {
         View sourceView = target.getWindow().getDecorView();
         bind(target, sourceView);
@@ -39,8 +41,9 @@ public class BindService {
      * @param target ViewHolder
      * @param source item root view
      */
-    @NonNull
+
     @UiThread
+    @NonNull
     public static final void bind(Object target, View source) {
         String className = target.getClass().getName();
         BindTemplate bindTemplateService = classCache.get(className);
