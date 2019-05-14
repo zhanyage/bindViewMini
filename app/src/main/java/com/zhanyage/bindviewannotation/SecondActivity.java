@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.zhanyage.bindview.annotation.Bind;
-import com.zhanyage.bindview.core.template.BindService;
+import com.zhanyage.bindview.core.service.BindService;
 
 /**
  * Created by andya on 2019/4/15

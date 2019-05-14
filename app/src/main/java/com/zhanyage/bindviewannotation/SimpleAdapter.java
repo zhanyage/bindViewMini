@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.zhanyage.bindview.annotation.Bind;
-import com.zhanyage.bindview.core.template.BindService;
+import com.zhanyage.bindview.core.service.BindService;
 
 import java.util.Locale;
 

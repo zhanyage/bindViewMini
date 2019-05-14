@@ -1,10 +1,11 @@
-package com.zhanyage.bindview.core.template;
+package com.zhanyage.bindview.core.service;
 
 import android.app.Activity;
 
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
+import com.zhanyage.bindview.core.template.BindTemplate;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

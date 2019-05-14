@@ -1,9 +1,7 @@
 package com.zhanyage.bindview.compile.processor;
 
-import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.*;
-import com.sun.source.util.Trees;
 import com.sun.tools.javac.tree.JCTree;
 import com.zhanyage.bindview.annotation.Bind;
 import com.zhanyage.bindview.compile.entry.Id;
@@ -35,13 +33,13 @@ import static javax.lang.model.element.Modifier.STATIC;
 
 /**
  * Created by andya on 2019/4/12
- * Describe:
+ * Describe: Bind for Processor
  */
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({ANNOTATION_TYPE_BIND})
 public class BindProcessor extends BaseProcessor {
 
-    //把每个类的 Bind 注解归纳到一起
+    //bind collection for class
     private Map<TypeElement, List<Element>> parentAndChild = new HashMap<>();   // Contain field need autowired and his super class.
 
 
@@ -84,7 +82,7 @@ public class BindProcessor extends BaseProcessor {
     }
 
     /**
-     * 生成一个文件中的 BindView 的代码
+     * generate a file for use BindView class
      */
     private void parseBindView() {
         TypeMirror viewTm = elementUtils.getTypeElement(Constants.VIEW_TYPE).asType();
@@ -93,27 +91,25 @@ public class BindProcessor extends BaseProcessor {
         ParameterSpec viewObjectParameter = ParameterSpec.builder(TypeName.OBJECT, PARAMETER_VIEW_TARGET).build();
 
         if (MapUtils.isNotEmpty(parentAndChild)) {
-            //正式开始处理每个类的中的 bind 注解
+            //real start process bindView annotation for a class
             for (Map.Entry<TypeElement, List<Element>> entry : parentAndChild.entrySet()) {
-                //Build Method : bindTargetView 方法
+                //Build Method : bindTargetView method
                 MethodSpec.Builder bindTargetViewMethodSpec = MethodSpec.methodBuilder(METHOD_BINDTARGETVIEW)
                         .addAnnotation(Override.class)
                         .addModifiers(PUBLIC)
                         .addParameter(objectParameter)
                         .addParameter(viewObjectParameter);
 
-                //获取父类的 Element
+                //get parent Element
                 TypeElement parent = entry.getKey();
-                //获取该类中被 Bind 注释的变量
+                //get this class Bind for field
                 List<Element> childs = entry.getValue();
 
-                //这样去获取包名才不会出现 新建SimpleAdapter package 的情况
+                //this get package will not geterate SimpleAdapter package
                 String packageName = getPackage(parent).getQualifiedName().toString();
                 String className = parent.getQualifiedName().toString().substring(
                         packageName.length() + 1).replace('.', '$');
-//                String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
                 ClassName fileName = ClassName.get(packageName, className + NAME_OF_BINDVIEW);
-//                String fileName = parent.getSimpleName() + NAME_OF_BINDVIEW;
 
                 logger.info(">>> Start process " + childs.size() + " field in " + parent.getSimpleName() + " ... <<<");
                 logger.info(">>> fileName:" + IBINDTEMPLATE);
@@ -129,7 +125,7 @@ public class BindProcessor extends BaseProcessor {
 
                 for (Element element : childs) {
                     boolean isError = isInaccessibleViaGeneratedCode(Bind.class, "fields", element);
-                    //判断是否为 view 如果不是 view 那么就提示错误
+                    //judge this element is  view , if not view then toast error
                     if (!isSubtypeOfType(element.asType(),Constants.VIEW_TYPE)) {
                         logger.error("type is not same");
                         isError = true;
@@ -139,7 +135,7 @@ public class BindProcessor extends BaseProcessor {
                         return;
                     }
                     Bind fieldConfig = element.getAnnotation(Bind.class);
-                    //获取类型的名字
+                    //get type name
                     String fieldName = element.getSimpleName().toString();
                     String originalValue = "substitute." + fieldName;
                     String statement = originalValue + "=" + buildCastCode(element) + "(substituteView.findViewById($L))";
@@ -163,7 +159,7 @@ public class BindProcessor extends BaseProcessor {
     }
 
     /**
-     * 判断 bind 注解是否使用在不恰当的地方
+     * judge bindView use is reasonable
      */
     private boolean isInaccessibleViaGeneratedCode(Class<? extends Annotation> annotationClass,
                                                    String targetThing, Element element) {
@@ -200,18 +196,18 @@ public class BindProcessor extends BaseProcessor {
     }
 
     /**
-     * 判断 typeMirror 是否为 otherType 或者其子类
+     * judge typeMirror is otherType or child
      */
     static boolean isSubtypeOfType(TypeMirror typeMirror, String otherType) {
         if (isTypeEqual(typeMirror, otherType)) {
             return true;
         }
-        //当不是接口或者类的时候 return
+        //if not interface or class , return
         if (typeMirror.getKind() != TypeKind.DECLARED) {
             return false;
         }
         DeclaredType declaredType = (DeclaredType) typeMirror;
-        //返回此类型的实际参数类型
+        //return this type real field type
         List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
         if (typeArguments.size() > 0) {
             StringBuilder typeString = new StringBuilder(declaredType.asElement().toString());
@@ -279,7 +275,6 @@ public class BindProcessor extends BaseProcessor {
     private void categories(Set<? extends Element> elements) throws IllegalAccessException {
         if (CollectionUtils.isNotEmpty(elements)) {
             for (Element element : elements) {
-                //返回封装此元素的嘴里层元素
                 TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
 
                 if (element.getModifiers().contains(Modifier.PRIVATE)) {

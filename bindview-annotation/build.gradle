@@ -1,5 +1,4 @@
 apply plugin: 'java-library'
-apply plugin: 'com.novoda.bintray-release'  //添加
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

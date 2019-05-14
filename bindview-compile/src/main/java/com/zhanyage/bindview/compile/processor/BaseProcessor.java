@@ -9,7 +9,6 @@ import com.sun.tools.javac.tree.TreeScanner;
 import com.zhanyage.bindview.compile.entry.Id;
 import com.zhanyage.bindview.compile.utils.Logger;
 
-import javax.annotation.Nullable;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
